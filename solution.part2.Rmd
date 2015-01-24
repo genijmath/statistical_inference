@@ -15,6 +15,7 @@ delivery methods (orange juice or ascorbic acid) (source: `?ToothGrowth`).
 ## Explore basic features
 I found the most convenient to look at this data using the following `boxplot`:
 ```{r}
+data(ToothGrowth)
 boxplot(len ~ dose + supp, data = ToothGrowth)
 ```
 
@@ -27,15 +28,9 @@ although for asorbic acid we see higher variance.
 For each concentration (dose), do we have significant difference in 
 mean values?
 ```{r}
-t.test(
-  subset(ToothGrowth, dose == 0.5 & supp == 'OJ')$len 
-  - subset(ToothGrowth, dose == 0.5 & supp == 'VC')$len)
-t.test(
-  subset(ToothGrowth, dose == 1.0 & supp == 'OJ')$len 
-  - subset(ToothGrowth, dose == 1.0 & supp == 'VC')$len)
-t.test(
-  subset(ToothGrowth, dose == 2.0 & supp == 'OJ')$len 
-  - subset(ToothGrowth, dose == 2.0 & supp == 'VC')$len)
+t.test(len ~ supp,  data=subset(ToothGrowth, dose == 0.5))
+t.test(len ~ supp,  data=subset(ToothGrowth, dose == 1.0))
+t.test(len ~ supp,  data=subset(ToothGrowth, dose == 2.0))
 ```
 We see that for concentrations of `0.5 mg` and `1.0 mg` the `95%` confidence 
 interval is above zero, and for concentration of `2.0 mg` confidence interval 
