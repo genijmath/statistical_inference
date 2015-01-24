@@ -1,0 +1,79 @@
+---
+title: "Basic analysis of ToothGrowth dataset"
+author: "Yevgen Yampolskiy"
+date: "01/23/2015"
+output: html_document
+---
+
+`ToothGrowth` dataset describes the effect of vitamin C on tooth growth in 
+guinea pigs.
+
+The response is the length of odontoblasts (teeth) in each of `10` guinea pigs 
+at each of three dose levels of Vitamin C (`0.5`, `1`, and `2 mg`) with each of two 
+delivery methods (orange juice or ascorbic acid) (source: `?ToothGrowth`).
+
+## Explore basic features
+I found the most convenient to look at this data using the following `boxplot`:
+```{r}
+boxplot(len ~ dose + supp, data = ToothGrowth)
+```
+
+From this plot we can assume that length increases as the dose increases, and 
+that orange juice method is more effective for small concentrations. 
+For concentration of `2 mg` method choice does not make much difference, 
+although for asorbic acid we see higher variance. 
+
+## Significance of results
+For each concentration (dose), do we have significant difference in 
+mean values?
+```{r}
+t.test(
+  subset(ToothGrowth, dose == 0.5 & supp == 'OJ')$len 
+  - subset(ToothGrowth, dose == 0.5 & supp == 'VC')$len)
+t.test(
+  subset(ToothGrowth, dose == 1.0 & supp == 'OJ')$len 
+  - subset(ToothGrowth, dose == 1.0 & supp == 'VC')$len)
+t.test(
+  subset(ToothGrowth, dose == 2.0 & supp == 'OJ')$len 
+  - subset(ToothGrowth, dose == 2.0 & supp == 'VC')$len)
+```
+We see that for concentrations of `0.5 mg` and `1.0 mg` the `95%` confidence 
+interval is above zero, and for concentration of `2.0 mg` confidence interval 
+contains zero, which supports initial observation.
+
+## Study assumptions
+Fundamental assumption we are making is that guinea pigs for each group had 
+equal qualities. For example, if orange juice and Vitamin C where given to 
+guinea pigs of different breeds, or one group contained only male pigs while 
+another group only female than non-homogenuity could be the driving factor. 
+One way to archive homogenuity is to form groups *at random*.
+
+To see that this is really the case it worth checking data source. 
+In our case detailed description of the data set could be found in 
+*Bliss (1952) The Statistics of Bioassay. Academic Press, pp. 499-500*:
+
+**Example 9a**. A biological assay of the vitamin C activity of fresh orange juice 
+may be used as a second example. The response of `10` guinea pigs on each of 
+three doses of ascorbic acid (`S`) and of fresh orange juice (`U`) during a 
+six-week test period was measured by Crampton (26) from the average length 
+of the odontoblasts in each animal (p. 257), with the results given in 
+`Table XXVIII`. Five of the animals at each treatment combination were males 
+and five were females but except for this sex restriction the guinea pigs were 
+assigned to doses entirely at random. The assay could be considered, 
+therefore, as forming a `2 X 3 X 2` factorial experiment and has been so 
+analyzed. The complete analysis (not given here) showed that the effect of sex 
+could be neglected, so that in the interests of simplicity the data will be 
+treated here as a `2 X 3` assay with `10` responses at each dose.
+
+*Table skipped*
+
+The fresh orange juice or unknown was analyzed chemically for its ascorbic 
+acid content and on this basis fed without alteration at the same three 
+levels of ascorbic acid as the standard. The ascorbic acid standard was 
+administered at `0.5`, `1.0` and `2.0 mg` per day in a mixture of corn starch 
+and corn meal. Hence the objective of the assay was to determine whether 
+under these conditions the antiscorbutic activity of the orange juice was 
+greater than would be predicted from its content of ascorbic acid as determined
+chemically in the present experiment.
+
+
